@@ -9,19 +9,15 @@ export default class Dashboard extends Component {
 
         <button>Nueva tarea</button>
 
-        <TaskCard
-          title="Comprensión lectora"
-          subject="Lengua"
-          course="4º Primaria"
-          difficulty="Media"
-        />
-
-        <TaskCard
-          title="Problemas de matemáticas"
-          subject="Matemáticas"
-          course="4º Primaria"
-          difficulty="Fácil"
-        />
+        {this.props.tasks.map((task, index) => (
+          <TaskCard
+            key={index}
+            title={task.title}
+            subject={task.subject}
+            course={task.course}
+            difficulty={task.difficulty}
+          />
+        ))}
       </div>
     );
   }
