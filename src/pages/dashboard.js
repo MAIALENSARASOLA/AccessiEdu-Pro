@@ -7,6 +7,8 @@ export default class Dashboard extends Component {
       <div>
         <h1>Mis tareas</h1>
 
+        <button>Nueva tarea</button>
+
         <TaskCard
           title="Comprensión lectora"
           subject="Lengua"
