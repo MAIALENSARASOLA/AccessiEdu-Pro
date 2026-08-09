@@ -1,0 +1,71 @@
+html {
+  font-size: 62.5%; // 1rem is 10px
+}
+
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+  font-family: 'montserrat';
+}
+
+body {
+  overflow-x: hidden;
+  font-weight: normal;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.app {
+  margin-top: 2rem;
+  display: grid;
+  justify-items: center;
+}
+
+.home {
+  width: 100%;
+  max-width: 1200px;
+  padding: 4rem;
+}
+
+.home-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
+}
+
+.feature-card {
+  padding: 2rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.home h1 {
+  font-size: 3.6rem;
+  margin-bottom: 1rem;
+}
+
+.home h2 {
+  font-size: 2.4rem;
+  margin-bottom: 2rem;
+}
+
+.home > p {
+  font-size: 1.6rem;
+  margin-bottom: 2rem;
+}
+
+.home button {
+  padding: 1rem 2rem;
+  margin-right: 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.4rem;
+}
