@@ -10,13 +10,15 @@ export default class App extends Component {
         title: 'Comprensión lectora',
         subject: 'Lengua',
         course: '4º Primaria',
-        difficulty: 'Media'
+        difficulty: 'Media',
+        instructions: 'Lee el texto y responde a las preguntas de comprensión.'
       },
       {
         title: 'Problemas de matemáticas',
         subject: 'Matemáticas',
         course: '4º Primaria',
-        difficulty: 'Fácil'
+        difficulty: 'Fácil',
+        instructions: 'Resuelve los problemas mostrando los pasos utilizados.'
       }
     ]
   };

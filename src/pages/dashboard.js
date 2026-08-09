@@ -4,7 +4,7 @@ import TaskCard from '../components/task-card';
 export default class Dashboard extends Component {
   render() {
     return (
-      <div>
+      <div className="dashboard">
         <h1>Mis tareas</h1>
 
         <button>Nueva tarea</button>
@@ -16,6 +16,7 @@ export default class Dashboard extends Component {
             subject={task.subject}
             course={task.course}
             difficulty={task.difficulty}
+            instructions={task.instructions}
           />
         ))}
       </div>
