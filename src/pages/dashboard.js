@@ -1,23 +1,55 @@
 import React, { Component } from 'react';
-import TaskCard from '../components/task-card';
 
 export default class Dashboard extends Component {
   render() {
+    const tasks = this.props.tasks || [];
+
     return (
       <div className="dashboard">
         <h1>Mis tareas</h1>
 
         <button>Nueva tarea</button>
 
-        {this.props.tasks.map((task, index) => (
-          <TaskCard
-            key={index}
-            title={task.title}
-            subject={task.subject}
-            course={task.course}
-            difficulty={task.difficulty}
-            instructions={task.instructions}
-          />
+        {tasks.map((task, index) => (
+          <div className="task-card" key={index}>
+            <h2>{task.title}</h2>
+
+            <p>
+              <strong>Asignatura:</strong> {task.subject}
+            </p>
+
+            <p>
+              <strong>Curso:</strong> {task.course}
+            </p>
+
+            <p>
+              <strong>Dificultad:</strong> {task.difficulty}
+            </p>
+
+            <p>
+              <strong>Instrucciones:</strong> {task.instructions}
+            </p>
+
+            <button
+              onClick={() => {
+                if (this.props.onEditTask) {
+                  this.props.onEditTask(index);   // ← CORREGIDO
+                }
+              }}
+            >
+              Editar
+            </button>
+
+            <button
+              onClick={() => {
+                if (this.props.onDeleteTask) {
+                  this.props.onDeleteTask(index);
+                }
+              }}
+            >
+              Eliminar
+            </button>
+          </div>
         ))}
       </div>
     );
