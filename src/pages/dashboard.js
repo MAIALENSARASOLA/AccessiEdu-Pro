@@ -8,10 +8,12 @@ export default class Dashboard extends Component {
       <div className="dashboard">
         <h1>Mis tareas</h1>
 
-        <button>Nueva tarea</button>
+        <button onClick={() => this.props.history.push('/create')}>
+          Nueva tarea
+        </button>
 
-        {tasks.map((task, index) => (
-          <div className="task-card" key={index}>
+        {tasks.map((task) => (
+          <div className="task-card" key={task.id}>
             <h2>{task.title}</h2>
 
             <p>
@@ -31,19 +33,22 @@ export default class Dashboard extends Component {
             </p>
 
             <button
+              aria-label={`Editar ${task.title}`}
               onClick={() => {
                 if (this.props.onEditTask) {
-                  this.props.onEditTask(index);   // ← CORREGIDO
+                  this.props.onEditTask(task.id);
                 }
+                this.props.history.push('/create');
               }}
             >
               Editar
             </button>
 
             <button
+              aria-label={`Eliminar ${task.title}`}
               onClick={() => {
                 if (this.props.onDeleteTask) {
-                  this.props.onDeleteTask(index);
+                  this.props.onDeleteTask(task.id);
                 }
               }}
             >

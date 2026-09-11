@@ -1,61 +1,70 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import axios from 'axios';
 
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import CreateTask from './pages/CreateTask';
 
+const API_URL = 'http://127.0.0.1:5000/tasks';
+
 export default class App extends Component {
   state = {
-    tasks: [
-      {
-        title: 'Comprensión lectora',
-        subject: 'Lengua',
-        course: '4º Primaria',
-        difficulty: 'Media',
-        instructions: 'Lee el texto y responde a las preguntas de comprensión.'
-      },
-      {
-        title: 'Problemas de matemáticas',
-        subject: 'Matemáticas',
-        course: '4º Primaria',
-        difficulty: 'Fácil',
-        instructions: 'Resuelve los problemas mostrando los pasos utilizados.'
-      }
-    ],
-    editingIndex: null
+    tasks: [],
+    editingId: null
   };
 
-  handleCreateTask = (newTask) => {
-    if (this.state.editingIndex !== null) {
-      const updatedTasks = [...this.state.tasks];
-      updatedTasks[this.state.editingIndex] = newTask;
+  componentDidMount() {
+    axios.get(API_URL)
+      .then(response => {
+        this.setState({ tasks: response.data });
+      })
+      .catch(error => {
+        console.error('Error al cargar las tareas:', error);
+      });
+  }
 
-      this.setState({
-        tasks: updatedTasks,
-        editingIndex: null
-      });
+  handleCreateTask = (newTask) => {
+    if (this.state.editingId !== null) {
+      axios.put(`${API_URL}/${this.state.editingId}`, newTask)
+        .then(response => {
+          const updatedTasks = this.state.tasks.map(task =>
+            task.id === this.state.editingId ? response.data : task
+          );
+          this.setState({ tasks: updatedTasks, editingId: null });
+        })
+        .catch(error => {
+          console.error('Error al actualizar la tarea:', error);
+        });
     } else {
-      this.setState({
-        tasks: [...this.state.tasks, newTask]
-      });
+      axios.post(API_URL, newTask)
+        .then(response => {
+          this.setState({ tasks: [...this.state.tasks, response.data] });
+        })
+        .catch(error => {
+          console.error('Error al crear la tarea:', error);
+        });
     }
   };
 
-  handleEditTask = (index) => {
-    this.setState({
-      editingIndex: index
-    });
+  handleEditTask = (id) => {
+    this.setState({ editingId: id });
   };
 
-  onDeleteTask = (indexToDelete) => {
-    const updatedTasks = this.state.tasks.filter((task, index) => index !== indexToDelete);
-    this.setState({ tasks: updatedTasks });
+  onDeleteTask = (id) => {
+    axios.delete(`${API_URL}/${id}`)
+      .then(() => {
+        const updatedTasks = this.state.tasks.filter(task => task.id !== id);
+        this.setState({ tasks: updatedTasks });
+      })
+      .catch(error => {
+        console.error('Error al eliminar la tarea:', error);
+      });
   };
 
   render() {
-    const taskToEdit = this.state.editingIndex !== null
-      ? this.state.tasks[this.state.editingIndex]
+    const taskToEdit = this.state.editingId !== null
+      ? this.state.tasks.find(task => task.id === this.state.editingId)
       : null;
 
     return (
@@ -75,8 +84,9 @@ export default class App extends Component {
             />
             <Route
               path='/dashboard'
-              render={() => (
+              render={(routeProps) => (
                 <Dashboard
+                  {...routeProps}
                   tasks={this.state.tasks}
                   onEditTask={this.handleEditTask}
                   onDeleteTask={this.onDeleteTask}
@@ -85,11 +95,12 @@ export default class App extends Component {
             />
             <Route
               path='/create'
-              render={() => (
+              render={(routeProps) => (
                 <CreateTask
+                  {...routeProps}
                   onCreateTask={this.handleCreateTask}
                   taskToEdit={taskToEdit}
-                  isEditing={this.state.editingIndex !== null}
+                  isEditing={this.state.editingId !== null}
                 />
               )}
             />

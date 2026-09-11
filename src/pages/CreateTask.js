@@ -9,20 +9,23 @@ export default class CreateTask extends Component {
       subject: '',
       course: '',
       difficulty: 'Fácil',
-      instructions: ''
+      instructions: '',
+      loadedTaskId: null
     };
   }
 
-  componentDidUpdate(prevProps) {
-    if (this.props.taskToEdit && this.props.taskToEdit !== prevProps.taskToEdit) {
-      this.setState({
-        title: this.props.taskToEdit.title,
-        subject: this.props.taskToEdit.subject,
-        course: this.props.taskToEdit.course,
-        difficulty: this.props.taskToEdit.difficulty,
-        instructions: this.props.taskToEdit.instructions
-      });
+  static getDerivedStateFromProps(props, state) {
+    if (props.taskToEdit && props.taskToEdit.id !== state.loadedTaskId) {
+      return {
+        title: props.taskToEdit.title,
+        subject: props.taskToEdit.subject,
+        course: props.taskToEdit.course,
+        difficulty: props.taskToEdit.difficulty,
+        instructions: props.taskToEdit.instructions,
+        loadedTaskId: props.taskToEdit.id
+      };
     }
+    return null;
   }
 
   handleSubmit = (event) => {
@@ -37,7 +40,8 @@ export default class CreateTask extends Component {
       subject: '',
       course: '',
       difficulty: 'Fácil',
-      instructions: ''
+      instructions: '',
+      loadedTaskId: null
     });
   };
 
