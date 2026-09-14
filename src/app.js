@@ -6,7 +6,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import CreateTask from './pages/CreateTask';
 
-const API_URL = 'http://127.0.0.1:5000/tasks';
+const API_URL = 'https://accessiedu-pro-backend.onrender.com/tasks';
 
 export default class App extends Component {
   state = {
