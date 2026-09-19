@@ -21,6 +21,16 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* ===== ACCESIBILIDAD: foco visible para navegación por teclado ===== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
 .app {
   margin-top: 2rem;
   display: grid;
@@ -68,4 +78,257 @@ body {
   border-radius: 6px;
   cursor: pointer;
   font-size: 1.4rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+}
+
+.home button:hover {
+  background-color: #1d4ed8;
+}
+
+/* ===== ACCESIBILIDAD: formularios (Crear/Editar tarea) ===== */
+.create-task {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+}
+
+.create-task form div {
+  margin-bottom: 1.6rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.create-task label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.create-task input,
+.create-task select,
+.create-task textarea {
+  font-size: 1.4rem;
+  padding: 0.8rem;
+  border: 1px solid #767676;
+  border-radius: 6px;
+  color: #1a1a1a;
+  background-color: #ffffff;
+}
+
+.create-task textarea {
+  min-height: 10rem;
+  resize: vertical;
+}
+
+.create-task button[type='submit'] {
+  padding: 1rem 2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+}
+
+.create-task button[type='submit']:hover {
+  background-color: #1d4ed8;
+}
+
+/* ===== DASHBOARD ===== */
+.dashboard {
+  width: 100%;
+  max-width: 800px;
+  padding: 2rem;
+}
+
+.dashboard h1 {
+  font-size: 3rem;
+  margin-bottom: 2rem;
+}
+
+.dashboard > button {
+  padding: 1rem 2rem;
+  margin-bottom: 2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+}
+
+.dashboard > button:hover {
+  background-color: #1d4ed8;
+}
+
+.task-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.task-card h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  word-wrap: break-word;
+}
+
+.task-card p {
+  font-size: 1.4rem;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.task-card > button {
+  padding: 0.8rem 1.6rem;
+  margin-right: 1rem;
+  margin-top: 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.3rem;
+  border: 1px solid #2563eb;
+  background-color: #ffffff;
+  color: #2563eb;
+}
+
+.task-card > button:hover {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+/* ===== FORMULARIO DE ADAPTACIÓN ===== */
+.adapt-form {
+  margin-top: 1.6rem;
+  padding: 1.6rem;
+  border-top: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+}
+
+.adapt-form h3 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+}
+
+.adaptation-item {
+  font-size: 1.4rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background-color: #f4f4f4;
+  border-radius: 6px;
+}
+
+.adapt-form label {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
+}
+
+.adapt-form select,
+.adapt-form textarea {
+  font-size: 1.4rem;
+  padding: 0.8rem;
+  border: 1px solid #767676;
+  border-radius: 6px;
+  color: #1a1a1a;
+  background-color: #ffffff;
+  margin-bottom: 1rem;
+}
+
+.adapt-form textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.adapt-form > button {
+  align-self: flex-start;
+  padding: 0.8rem 1.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1.4rem;
+  background-color: #2563eb;
+  color: #ffffff;
+  border: none;
+}
+
+.adapt-form > button:hover {
+  background-color: #1d4ed8;
+}
+
+/* ===================================================== */
+/* ===== RESPONSIVE: MÓVIL Y TABLET ===== */
+/* ===================================================== */
+
+@media (max-width: 768px) {
+  .app {
+    margin-top: 1rem;
+  }
+
+  .home,
+  .create-task,
+  .dashboard {
+    padding: 2rem 1.6rem;
+  }
+
+  .home h1 {
+    font-size: 2.6rem;
+  }
+
+  .home h2 {
+    font-size: 1.8rem;
+  }
+
+  /* Las 3 columnas pasan a 1 sola columna apilada */
+  .home-features {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+    margin-top: 2rem;
+  }
+
+  .home button {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .dashboard h1 {
+    font-size: 2.4rem;
+  }
+
+  .task-card {
+    padding: 1.6rem;
+  }
+
+  /* Los botones Editar/Eliminar/Adaptar se apilan en vertical y ocupan todo el ancho */
+  .task-card > button {
+    display: block;
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0.8rem;
+    text-align: center;
+  }
+
+  .adapt-form > button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .home h1 {
+    font-size: 2.2rem;
+  }
+
+  .home > p {
+    font-size: 1.4rem;
+  }
+
+  .task-card h2 {
+    font-size: 1.8rem;
+  }
 }
