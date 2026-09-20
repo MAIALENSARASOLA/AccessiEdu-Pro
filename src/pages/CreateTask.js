@@ -52,8 +52,9 @@ export default class CreateTask extends Component {
 
         <form onSubmit={this.handleSubmit}>
           <div>
-            <label>Título</label>
+            <label htmlFor="task-title">Título</label>
             <input
+              id="task-title"
               type="text"
               placeholder="Título de la tarea"
               value={this.state.title}
@@ -65,8 +66,9 @@ export default class CreateTask extends Component {
           </div>
 
           <div>
-            <label>Asignatura</label>
+            <label htmlFor="task-subject">Asignatura</label>
             <input
+              id="task-subject"
               type="text"
               placeholder="Asignatura"
               value={this.state.subject}
@@ -78,8 +80,9 @@ export default class CreateTask extends Component {
           </div>
 
           <div>
-            <label>Curso</label>
+            <label htmlFor="task-course">Curso</label>
             <input
+              id="task-course"
               type="text"
               placeholder="Ej. 4º Primaria"
               value={this.state.course}
@@ -91,8 +94,9 @@ export default class CreateTask extends Component {
           </div>
 
           <div>
-            <label>Dificultad</label>
+            <label htmlFor="task-difficulty">Dificultad</label>
             <select
+              id="task-difficulty"
               value={this.state.difficulty}
               onChange={(event) =>
                 this.setState({ difficulty: event.target.value })
@@ -105,8 +109,9 @@ export default class CreateTask extends Component {
           </div>
 
           <div>
-            <label>Instrucciones</label>
+            <label htmlFor="task-instructions">Instrucciones</label>
             <textarea
+              id="task-instructions"
               placeholder="Escribe las instrucciones de la tarea"
               value={this.state.instructions}
               onChange={(event) =>
