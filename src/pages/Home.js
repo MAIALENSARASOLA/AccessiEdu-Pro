@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 export default class Home extends Component {
   render() {
@@ -11,8 +12,8 @@ export default class Home extends Component {
           Crea, organiza y adapta actividades educativas de forma sencilla.
         </p>
 
-        <button>Entrar</button>
-        <button>Crear cuenta</button>
+        <Link to='/dashboard' className='home-button'>Ver mis tareas</Link>
+        <Link to='/create' className='home-button'>Crear tarea</Link>
 
         <div className='home-features'>
           <div className='feature-card'>

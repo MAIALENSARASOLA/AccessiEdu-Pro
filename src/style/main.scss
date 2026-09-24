@@ -72,7 +72,11 @@ textarea:focus-visible {
   margin-bottom: 2rem;
 }
 
-.home button {
+/* CAMBIO 1: los enlaces de la Home usan el mismo estilo que los botones */
+.home button,
+.home-button {
+  display: inline-block;
+  text-decoration: none;
   padding: 1rem 2rem;
   margin-right: 1rem;
   border-radius: 6px;
@@ -83,7 +87,9 @@ textarea:focus-visible {
   border: none;
 }
 
-.home button:hover {
+/* CAMBIO 2: mismo color al pasar el ratón */
+.home button:hover,
+.home-button:hover {
   background-color: #1d4ed8;
 }
 
@@ -291,10 +297,14 @@ textarea:focus-visible {
     margin-top: 2rem;
   }
 
-  .home button {
+  /* CAMBIO 3: en móvil los enlaces también ocupan todo el ancho */
+  .home button,
+  .home-button {
+    display: block;
     width: 100%;
     margin-right: 0;
     margin-bottom: 1rem;
+    text-align: center;
   }
 
   .dashboard h1 {
