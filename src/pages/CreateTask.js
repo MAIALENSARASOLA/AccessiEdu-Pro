@@ -31,6 +31,11 @@ export default class CreateTask extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
 
+    if (this.state.title.trim() === '') {
+      alert('El título no puede estar vacío');
+      return;
+    }
+
     if (this.props.onCreateTask) {
       this.props.onCreateTask(this.state);
     }
