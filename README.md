@@ -1,63 +1,66 @@
 # AccessiEdu Pro
 
-Aplicación web para que docentes creen, organicen y gestionen tareas escolares accesibles y adaptadas a distintas necesidades educativas (dislexia, TDAH, TEA, altas capacidades, etc.).
+Es mi proyecto final del bootcamp de Full Stack. Es una aplicación web para que el profesorado pueda crear sus tareas y guardar versiones adaptadas para el alumnado que lo necesite (dislexia, TDAH, TEA, altas capacidades...).
 
-🔗 **Demo en vivo:** https://eloquent-semolina-ae9f0d.netlify.app
-🔗 **API Backend:** https://accessiedu-pro-backend.onrender.com
+Demo: https://accessiedu-pro.netlify.app
+API: https://accessiedu-pro-backend.onrender.com
 
-## ¿Qué problema resuelve?
+Aviso: el backend está en el plan gratis de Render y se duerme si nadie lo usa, así que la primera vez puede tardar casi un minuto en cargar.
 
-Adaptar una misma tarea a diferentes necesidades del alumnado suele llevar mucho tiempo manual al profesorado. AccessiEdu Pro permite crear una tarea una vez y guardar distintas versiones adaptadas de ella (lectura simplificada, apoyo visual, menos ejercicios, etc.), todo desde un panel sencillo y accesible.
+## Por qué lo hice
 
-## Funcionalidades
+Soy maestra, y sé lo que cuesta adaptar una misma ficha para varios alumnos. Muchas veces se hace a mano, tarea por tarea. Con AccessiEdu Pro creas la tarea una vez y le vas añadiendo las adaptaciones: lectura más fácil, apoyo visual, menos ejercicios, etc.
 
-- Registro de tareas (título, asignatura, curso, dificultad, instrucciones)
-- CRUD completo de tareas: crear, ver, editar y eliminar
-- Sistema de Adaptaciones: cada tarea puede tener varias versiones adaptadas (funcionalidad distintiva del proyecto)
-- Diseño responsive (móvil, tablet, ordenador)
-- Accesibilidad: labels asociadas, navegación por teclado, contraste WCAG AA
+## Qué se puede hacer
 
-## Tecnologías utilizadas
+- Crear, ver, editar y borrar tareas (título, asignatura, curso, dificultad e instrucciones).
+- Añadir adaptaciones a cada tarea. Es la parte que más me interesaba del proyecto.
+- No deja guardar una tarea sin título.
+- Se ve bien en el móvil.
+- Accesibilidad: cada campo tiene su label, se puede usar con el teclado y los colores tienen buen contraste.
 
-**Frontend:** React, React Router, Axios, SCSS
-**Backend:** Python, Flask, Flask-SQLAlchemy, Flask-CORS
-**Base de datos:** SQLite
-**Despliegue:** Netlify (frontend) + Render (backend)
-**Control de versiones:** Git / GitHub
+## Con qué está hecho
 
-## Arquitectura
+- Frontend: React, React Router, Axios y SCSS.
+- Backend: Python con Flask, Flask-SQLAlchemy y Flask-CORS.
+- Base de datos: PostgreSQL en Neon cuando está publicado, y SQLite cuando lo arranco en mi ordenador.
+- Despliegue: Netlify para el frontend y Render para el backend.
+- Git y GitHub.
 
-React (Netlify) → HTTP/Axios → Flask API (Render) → SQLAlchemy → SQLite
+## Cómo funciona por dentro
 
-Tablas principales:
-- `Task` (id, title, subject, course, difficulty, instructions)
-- `Adaptation` (id, task_id → FK a Task, type, content)
+React (Netlify) → Axios → API de Flask (Render) → SQLAlchemy → PostgreSQL (Neon)
 
-## Instalación local
+Hay dos tablas:
+- `Task`: id, title, subject, course, difficulty, instructions
+- `Adaptation`: id, task_id (clave foránea a Task), type, content
 
-### Backend
-​```
-cd backend
-python3 -m venv venv
-source venv/bin/activate
-pip install -r requirements.txt
-python app.py
-​```
-El servidor arranca en `http://localhost:5000`
+Las separé porque una tarea puede tener varias adaptaciones.
 
-### Frontend
-​```
-cd frontend/accessiedu
+## Lo que aprendí por mi cuenta
+
+En el curso desplegamos en Heroku y trabajamos con SQLite y MySQL. Aquí tuve que aprender a desplegar en Netlify y Render, a usar PostgreSQL en Neon y a pasar la conexión con una variable de entorno (`DATABASE_URL`), para no dejar la contraseña en el código.
+
+No lo tenía planeado. Lo cambié cuando vi que en Render las tareas se borraban, porque el disco del plan gratis no guarda los datos. Con SQLite, cada vez que el servidor se reiniciaba, la base de datos volvía a estar vacía.
+
+## Para arrancarlo en local
+
+Frontend:
+```
+git clone https://github.com/MAIALENSARASOLA/AccessiEdu-Pro.git
+cd AccessiEdu-Pro
 npm install
 npm start
-​```
-La app arranca en `http://localhost:3000`
+```
+Se abre en http://localhost:3000
 
-## Repositorios
+El backend está en otro repositorio, con sus propias instrucciones:
+https://github.com/MAIALENSARASOLA/AccessiEdu-Pro-backend
 
-- Frontend: https://github.com/MAIALENSARASOLA/AccessiEdu-Pro
-- Backend: https://github.com/MAIALENSARASOLA/AccessiEdu-Pro-backend
+## Lo que me gustaría añadir más adelante
 
-## Autora
+- Login, para que cada profesor vea solo sus tareas.
+- Exportar una tarea adaptada a PDF para imprimirla.
+- Algunos tests.
 
-Maialen Sarasola — Proyecto Final (Capstone), Full Stack Development with JavaScript, Python, React.
+Maialen Sarasola — Capstone, Full Stack Development with JavaScript, Python, React.
