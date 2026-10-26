@@ -1,151 +1,46 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-const API_URL = 'https://accessiedu-pro-backend.onrender.com';
+import TaskCard from '../components/TaskCard';
 
-export default class Dashboard extends Component {
-  state = {
-    adaptingTaskId: null,
-    adaptationType: '',
-    adaptationContent: '',
-    adaptationsByTask: {}
-  };
+export default function Dashboard({ tasks, loading, loadError, onRetry, onDeleteTask, history, location }) {
+  // Mensaje que llega al volver de crear/editar/borrar (ej. "Tarea creada.")
+  const message = location && location.state && location.state.message;
 
-  toggleAdaptForm = (taskId) => {
-    if (this.state.adaptingTaskId === taskId) {
-      this.setState({ adaptingTaskId: null, adaptationType: '', adaptationContent: '' });
-    } else {
-      this.setState({ adaptingTaskId: taskId, adaptationType: '', adaptationContent: '' });
-      this.loadAdaptations(taskId);
-    }
-  };
-
-  loadAdaptations = (taskId) => {
-    axios.get(`${API_URL}/tasks/${taskId}/adaptations`)
-      .then((response) => {
-        this.setState((prevState) => ({
-          adaptationsByTask: {
-            ...prevState.adaptationsByTask,
-            [taskId]: response.data
-          }
-        }));
-      })
-      .catch((error) => {
-        console.log('Error cargando adaptaciones:', error);
-      });
-  };
-
-  handleSaveAdaptation = (taskId) => {
-    const { adaptationType, adaptationContent } = this.state;
-
-    if (!adaptationType || !adaptationContent) {
-      alert('Rellena el tipo y el contenido de la adaptación.');
-      return;
-    }
-
-    axios.post(`${API_URL}/tasks/${taskId}/adaptations`, {
-      type: adaptationType,
-      content: adaptationContent
-    })
-      .then(() => {
-        this.setState({ adaptationType: '', adaptationContent: '' });
-        this.loadAdaptations(taskId);
-      })
-      .catch((error) => {
-        console.log('Error guardando adaptación:', error);
-      });
-  };
-
-  render() {
-    const tasks = this.props.tasks || [];
-    const { adaptingTaskId, adaptationType, adaptationContent, adaptationsByTask } = this.state;
-
-    return (
-      <div className="dashboard">
+  return (
+    <div className="page dashboard">
+      <div className="page-header">
         <h1>Mis tareas</h1>
-
-        <button onClick={() => this.props.history.push('/create')}>
-          Nueva tarea
-        </button>
-
-        {tasks.map((task) => (
-          <div className="task-card" key={task.id}>
-            <h2>{task.title}</h2>
-
-            <p><strong>Asignatura:</strong> {task.subject}</p>
-            <p><strong>Curso:</strong> {task.course}</p>
-            <p><strong>Dificultad:</strong> {task.difficulty}</p>
-            <p><strong>Instrucciones:</strong> {task.instructions}</p>
-
-            <button
-              aria-label={`Editar ${task.title}`}
-              onClick={() => {
-                if (this.props.onEditTask) {
-                  this.props.onEditTask(task.id);
-                }
-                this.props.history.push('/create');
-              }}
-            >
-              Editar
-            </button>
-
-            <button
-              aria-label={`Eliminar ${task.title}`}
-              onClick={() => {
-                if (this.props.onDeleteTask) {
-                  this.props.onDeleteTask(task.id);
-                }
-              }}
-            >
-              Eliminar
-            </button>
-
-            <button
-              aria-label={`Adaptar ${task.title}`}
-              onClick={() => this.toggleAdaptForm(task.id)}
-            >
-              Adaptar
-            </button>
-
-            {adaptingTaskId === task.id && (
-              <div className="adapt-form">
-                <h3>Adaptaciones de esta tarea</h3>
-
-                {(adaptationsByTask[task.id] || []).map((adapt) => (
-                  <div key={adapt.id} className="adaptation-item">
-                    <strong>{adapt.type}:</strong> {adapt.content}
-                  </div>
-                ))}
-
-                <label htmlFor={`type-${task.id}`}>Tipo de adaptación</label>
-                <select
-                  id={`type-${task.id}`}
-                  value={adaptationType}
-                  onChange={(e) => this.setState({ adaptationType: e.target.value })}
-                >
-                  <option value="">Selecciona un tipo</option>
-                  <option value="Lectura simplificada">Lectura simplificada</option>
-                  <option value="Instrucciones paso a paso">Instrucciones paso a paso</option>
-                  <option value="Menos ejercicios">Menos ejercicios</option>
-                  <option value="Apoyo visual">Apoyo visual</option>
-                </select>
-
-                <label htmlFor={`content-${task.id}`}>Contenido de la adaptación</label>
-                <textarea
-                  id={`content-${task.id}`}
-                  placeholder="Escribe aquí la versión adaptada"
-                  value={adaptationContent}
-                  onChange={(e) => this.setState({ adaptationContent: e.target.value })}
-                />
-
-                <button onClick={() => this.handleSaveAdaptation(task.id)}>
-                  Guardar adaptación
-                </button>
-              </div>
-            )}
-          </div>
-        ))}
+        <Link to="/create" className="btn btn--primary">Nueva tarea</Link>
       </div>
-    );
-  }
+
+      {message && <p className="status-message status-message--success" role="status">{message}</p>}
+
+      {loading && (
+        <p className="status-message" role="status">
+          Cargando tareas… (si el servidor estaba dormido, puede tardar hasta un minuto)
+        </p>
+      )}
+
+      {loadError && (
+        <div className="form-error" role="alert">
+          <p>{loadError}</p>
+          <button type="button" className="btn btn--outline" onClick={onRetry}>Reintentar</button>
+        </div>
+      )}
+
+      {!loading && !loadError && tasks.length === 0 && (
+        <p className="empty-message">Todavía no tienes tareas. Crea la primera con el botón «Nueva tarea».</p>
+      )}
+
+      {tasks.map((task) => (
+        <TaskCard
+          key={task.id}
+          task={task}
+          onEdit={(id) => history.push(`/tasks/${id}/edit`)}
+          onDelete={onDeleteTask}
+        />
+      ))}
+    </div>
+  );
 }

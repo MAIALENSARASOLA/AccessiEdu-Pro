@@ -1,111 +1,167 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
-import axios from 'axios';
 
+import { tasksApi, getErrorMessage } from './api';
+import NavBar from './components/NavBar';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import CreateTask from './pages/CreateTask';
-
-const API_URL = 'https://accessiedu-pro-backend.onrender.com/tasks';
+import TaskDetail from './pages/TaskDetail';
 
 export default class App extends Component {
   state = {
     tasks: [],
-    editingId: null
+    loading: true,
+    loadError: ''
   };
 
   componentDidMount() {
-    axios.get(API_URL)
-      .then(response => {
-        this.setState({ tasks: response.data });
-      })
-      .catch(error => {
-        console.error('Error al cargar las tareas:', error);
-      });
+    this.loadTasks();
   }
 
-  handleCreateTask = (newTask) => {
-    if (this.state.editingId !== null) {
-      axios.put(`${API_URL}/${this.state.editingId}`, newTask)
-        .then(response => {
-          const updatedTasks = this.state.tasks.map(task =>
-            task.id === this.state.editingId ? response.data : task
-          );
-          this.setState({ tasks: updatedTasks, editingId: null });
-        })
-        .catch(error => {
-          console.error('Error al actualizar la tarea:', error);
-        });
-    } else {
-      axios.post(API_URL, newTask)
-        .then(response => {
-          this.setState({ tasks: [...this.state.tasks, response.data] });
-        })
-        .catch(error => {
-          console.error('Error al crear la tarea:', error);
-        });
-    }
-  };
-
-  handleEditTask = (id) => {
-    this.setState({ editingId: id });
-  };
-
-  onDeleteTask = (id) => {
-    axios.delete(`${API_URL}/${id}`)
-      .then(() => {
-        const updatedTasks = this.state.tasks.filter(task => task.id !== id);
-        this.setState({ tasks: updatedTasks });
+  loadTasks = () => {
+    this.setState({ loading: true, loadError: '' });
+    tasksApi.getAll()
+      .then((response) => {
+        this.setState({ tasks: response.data, loading: false });
       })
-      .catch(error => {
+      .catch((error) => {
+        console.error('Error al cargar las tareas:', error);
+        this.setState({
+          loading: false,
+          loadError: 'No se han podido cargar las tareas. Comprueba tu conexión y vuelve a intentarlo.'
+        });
+      });
+  };
+
+  // Crear: devuelve una promesa para que el formulario sepa si ha ido bien
+  handleCreateTask = (newTask) => {
+    return tasksApi.create(newTask)
+      .then((response) => {
+        this.setState((prevState) => ({ tasks: [...prevState.tasks, response.data] }));
+        return response.data;
+      })
+      .catch((error) => {
+        throw getErrorMessage(error, 'No se ha podido crear la tarea.');
+      });
+  };
+
+  handleUpdateTask = (id, changes) => {
+    return tasksApi.update(id, changes)
+      .then((response) => {
+        this.setState((prevState) => ({
+          tasks: prevState.tasks.map((task) => (task.id === id ? response.data : task))
+        }));
+        return response.data;
+      })
+      .catch((error) => {
+        throw getErrorMessage(error, 'No se han podido guardar los cambios.');
+      });
+  };
+
+  // Borrar: pide confirmación antes. Devuelve una promesa con true si se ha borrado.
+  handleDeleteTask = (task) => {
+    const confirmed = window.confirm(
+      `¿Seguro que quieres eliminar la tarea "${task.title}"? También se eliminarán sus adaptaciones.`
+    );
+    if (!confirmed) {
+      return Promise.resolve(false);
+    }
+
+    return tasksApi.remove(task.id)
+      .then(() => {
+        this.setState((prevState) => ({
+          tasks: prevState.tasks.filter((t) => t.id !== task.id)
+        }));
+        return true;
+      })
+      .catch((error) => {
         console.error('Error al eliminar la tarea:', error);
+        window.alert('No se ha podido eliminar la tarea. Inténtalo de nuevo.');
+        return false;
       });
   };
 
   render() {
-    const taskToEdit = this.state.editingId !== null
-      ? this.state.tasks.find(task => task.id === this.state.editingId)
-      : null;
+    const { tasks, loading, loadError } = this.state;
 
     return (
       <Router>
-        <div className='app'>
-          <nav style={{ padding: '1rem', background: '#f4f4f4', marginBottom: '1rem' }}>
-            <Link to='/' style={{ marginRight: '15px' }}>Inicio</Link>
-            <Link to='/dashboard' style={{ marginRight: '15px' }}>Panel (Dashboard)</Link>
-            <Link to='/create'>Crear Tarea</Link>
-          </nav>
+        <NavBar />
 
+        <main className="app" id="main">
           <Switch>
+            <Route exact path="/" component={Home} />
+
             <Route
-              exact
-              path='/'
-              render={() => <Home />}
-            />
-            <Route
-              path='/dashboard'
+              path="/dashboard"
               render={(routeProps) => (
                 <Dashboard
                   {...routeProps}
-                  tasks={this.state.tasks}
-                  onEditTask={this.handleEditTask}
-                  onDeleteTask={this.onDeleteTask}
+                  tasks={tasks}
+                  loading={loading}
+                  loadError={loadError}
+                  onRetry={this.loadTasks}
+                  onDeleteTask={this.handleDeleteTask}
                 />
               )}
             />
+
             <Route
-              path='/create'
+              path="/create"
               render={(routeProps) => (
                 <CreateTask
                   {...routeProps}
-                  onCreateTask={this.handleCreateTask}
-                  taskToEdit={taskToEdit}
-                  isEditing={this.state.editingId !== null}
+                  onSubmit={this.handleCreateTask}
+                  isEditing={false}
                 />
               )}
             />
+
+            <Route
+              path="/tasks/:id/edit"
+              render={(routeProps) => {
+                const id = Number(routeProps.match.params.id);
+                const taskToEdit = tasks.find((task) => task.id === id);
+
+                if (!taskToEdit) {
+                  return (
+                    <div className="page">
+                      {loading
+                        ? <p className="status-message" role="status">Cargando la tarea…</p>
+                        : <p className="form-error" role="alert">Esta tarea no existe.</p>}
+                    </div>
+                  );
+                }
+
+                return (
+                  <CreateTask
+                    {...routeProps}
+                    taskToEdit={taskToEdit}
+                    isEditing={true}
+                    onSubmit={(changes) => this.handleUpdateTask(id, changes)}
+                  />
+                );
+              }}
+            />
+
+            <Route
+              path="/tasks/:id"
+              render={(routeProps) => (
+                <TaskDetail {...routeProps} onDeleteTask={this.handleDeleteTask} />
+              )}
+            />
+
+            <Route
+              render={() => (
+                <div className="page">
+                  <h1>Página no encontrada</h1>
+                  <Link to="/" className="btn btn--primary">Ir al inicio</Link>
+                </div>
+              )}
+            />
           </Switch>
-        </div>
+        </main>
       </Router>
     );
   }
