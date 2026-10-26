@@ -10,18 +10,20 @@ export default class CreateTask extends Component {
       course: '',
       difficulty: 'Fácil',
       instructions: '',
-      loadedTaskId: null
+      loadedTaskId: null,
+      error: '',
+      saving: false
     };
   }
 
   static getDerivedStateFromProps(props, state) {
     if (props.taskToEdit && props.taskToEdit.id !== state.loadedTaskId) {
       return {
-        title: props.taskToEdit.title,
-        subject: props.taskToEdit.subject,
-        course: props.taskToEdit.course,
-        difficulty: props.taskToEdit.difficulty,
-        instructions: props.taskToEdit.instructions,
+        title: props.taskToEdit.title || '',
+        subject: props.taskToEdit.subject || '',
+        course: props.taskToEdit.course || '',
+        difficulty: props.taskToEdit.difficulty || 'Fácil',
+        instructions: props.taskToEdit.instructions || '',
         loadedTaskId: props.taskToEdit.id
       };
     }
@@ -32,27 +34,34 @@ export default class CreateTask extends Component {
     event.preventDefault();
 
     if (this.state.title.trim() === '') {
-      alert('El título no puede estar vacío');
+      this.setState({ error: 'El título no puede estar vacío.' });
       return;
     }
 
-    if (this.props.onCreateTask) {
-      this.props.onCreateTask(this.state);
-    }
+    const task = {
+      title: this.state.title.trim(),
+      subject: this.state.subject.trim(),
+      course: this.state.course.trim(),
+      difficulty: this.state.difficulty,
+      instructions: this.state.instructions.trim()
+    };
 
-    this.setState({
-      title: '',
-      subject: '',
-      course: '',
-      difficulty: 'Fácil',
-      instructions: '',
-      loadedTaskId: null
-    });
+    this.setState({ saving: true, error: '' });
+
+    // onSubmit devuelve una promesa: si se guarda bien, volvemos al Dashboard
+    this.props.onSubmit(task)
+      .then(() => {
+        const message = this.props.isEditing ? 'Tarea actualizada.' : 'Tarea creada.';
+        this.props.history.push({ pathname: '/dashboard', state: { message } });
+      })
+      .catch((errorMessage) => {
+        this.setState({ saving: false, error: errorMessage });
+      });
   };
 
   render() {
     return (
-      <div className="create-task">
+      <div className="page create-task">
         <h1>{this.props.isEditing ? 'Editar tarea' : 'Crear tarea'}</h1>
 
         <form onSubmit={this.handleSubmit}>
@@ -126,9 +135,16 @@ export default class CreateTask extends Component {
             />
           </div>
 
-          <button type="submit">
-            {this.props.isEditing ? 'Guardar cambios' : 'Crear tarea'}
-          </button>
+          {this.state.error && <p className="form-error" role="alert">{this.state.error}</p>}
+
+          <div className="button-row">
+            <button type="submit" className="btn btn--primary" disabled={this.state.saving}>
+              {this.state.saving ? 'Guardando…' : this.props.isEditing ? 'Guardar cambios' : 'Crear tarea'}
+            </button>
+            <button type="button" className="btn btn--outline" onClick={() => this.props.history.goBack()}>
+              Cancelar
+            </button>
+          </div>
         </form>
       </div>
     );
