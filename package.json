@@ -1,36 +1,33 @@
 {
-  "name": "react-redux-router",
+  "name": "accessiedu-pro",
   "version": "1.0.0",
-  "description": "Basic skeleton codebase for React/Redux/Router applications.",
+  "description": "AccessiEdu Pro: crea, adapta e imprime tareas escolares accesibles.",
   "scripts": {
     "preinstall": "npm set audit false",
     "start": "webpack-dev-server --config webpack/dev.config.js --watch",
     "build": "cross-env NODE_ENV=production webpack --config webpack/prod.config.js --progress --display-error-details --color",
     "heroku-postbuild": "npm run build",
     "precommit": "eslint src",
-    "prod": "NODE_ENV=production node server.js"
+    "prod": "NODE_ENV=production node server.js",
+    "test": "node test/taskFilters.test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:bottega-code-school/js-builder.git"
+    "url": "https://github.com/MAIALENSARASOLA/AccessiEdu-Pro.git"
   },
   "keywords": [
-    "es6",
-    "es7",
-    "webpack2",
-    "webpack3",
-    "starter",
-    "template",
-    "postcss",
-    "sass",
-    "css module"
+    "react",
+    "flask",
+    "accesibilidad",
+    "educacion",
+    "inclusion"
   ],
-  "author": "Your Name Here",
+  "author": "Maialen Sarasola",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bottega-code-school/js-builder/issues"
+    "url": "https://github.com/MAIALENSARASOLA/AccessiEdu-Pro/issues"
   },
-  "homepage": "https://github.com/bottega-code-school/js-builder",
+  "homepage": "https://accessiedu-pro.netlify.app",
   "dependencies": {
     "ajv": "6.12.0",
     "autoprefixer": "^9.1.0",

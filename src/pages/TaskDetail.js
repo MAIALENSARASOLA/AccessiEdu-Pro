@@ -166,6 +166,9 @@ export default class TaskDetail extends Component {
             >
               Editar tarea
             </button>
+            <Link to={`/tasks/${task.id}/print`} className="btn btn--outline">
+              Imprimir ficha
+            </Link>
             <button type="button" className="btn btn--danger" onClick={this.handleDeleteTask}>
               Eliminar tarea
             </button>
@@ -187,6 +190,7 @@ export default class TaskDetail extends Component {
                   adaptation={adapt}
                   onUpdate={this.handleUpdateAdaptation}
                   onDelete={this.handleDeleteAdaptation}
+                  printUrl={`/tasks/${task.id}/print?adaptation=${adapt.id}`}
                 />
               ))}
             </ul>
