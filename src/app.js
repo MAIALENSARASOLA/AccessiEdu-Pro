@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import CreateTask from './pages/CreateTask';
 import TaskDetail from './pages/TaskDetail';
+import PrintTask from './pages/PrintTask';
 
 export default class App extends Component {
   state = {
@@ -89,7 +90,7 @@ export default class App extends Component {
       <Router>
         <NavBar />
 
-        <main className="app" id="main">
+        <main className="app" id="main" tabIndex="-1">
           <Switch>
             <Route exact path="/" component={Home} />
 
@@ -144,6 +145,8 @@ export default class App extends Component {
                 );
               }}
             />
+
+            <Route path="/tasks/:id/print" component={PrintTask} />
 
             <Route
               path="/tasks/:id"

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { ADAPTATION_TYPES } from '../api';
 
 // Una adaptación: se puede ver, editar y borrar
@@ -39,7 +40,7 @@ export default class AdaptationItem extends Component {
   };
 
   render() {
-    const { adaptation, onDelete } = this.props;
+    const { adaptation, onDelete, printUrl } = this.props;
     const { isEditing, type, content, error } = this.state;
     const idPrefix = `adaptation-${adaptation.id}`;
 
@@ -99,6 +100,15 @@ export default class AdaptationItem extends Component {
           >
             Eliminar
           </button>
+          {printUrl && (
+            <Link
+              to={printUrl}
+              className="btn btn--outline btn--small"
+              aria-label={`Imprimir ficha con la adaptación ${adaptation.type}`}
+            >
+              Imprimir ficha
+            </Link>
+          )}
         </div>
       </li>
     );
